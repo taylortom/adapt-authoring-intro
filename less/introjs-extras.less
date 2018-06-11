@@ -1,0 +1,53 @@
+.introjs-tooltip {
+  padding: 20px;
+  p {
+    margin: 20px 0;
+  }
+  .introjs-progress {
+    height: 5px;
+    .introjs-progressbar {
+      background-color: @primary-color;
+    }
+  }
+  a.introjs-button {
+    .btn;
+    .introjs-button-reset;
+    background: @secondary-color;
+    font-size: 12px;
+    padding: 7px 10px;
+    margin-right: 7px;
+
+    &:focus {
+      .introjs-button-reset;
+      background: @primary-color;
+    }
+    &:hover {
+      .introjs-button-reset;
+    }
+  }
+  /* Custom tooltips */
+  &.frontpage {
+    width: 600px;
+    max-width: 600px;
+    padding: 25px;
+    font-size: 15px;
+    .title {
+      text-align: center;
+      font-size: 22px;
+    }
+  }
+}
+.introjs-helperLayer {
+  &.dark {
+    background: none;
+    border-color: white;
+  }
+}
+/* reusable styles */
+.introjs-button-reset {
+  text-shadow: none;
+  color: white;
+  font-family: inherit;
+  font-weight: inherit;
+  border: inherit;
+}
