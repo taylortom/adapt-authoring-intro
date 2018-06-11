@@ -96,6 +96,24 @@ define(function(require) {
           highlightClass: 'dark'
         }
       ]
+    },
+    'project:new': {
+      steps: [
+        {
+          intro: "When creating a new course, you're taken to this page, where you can enter some details about your course.",
+          tooltipClass: 'frontpage'
+        },
+        {
+          intro: "You can enable/disable groups of settings using these switch controls.",
+          element: '.sidebar-fieldset-filter-general',
+          highlightClass: 'dark'
+        },
+        {
+          intro: "When you're ready, you can save the new course using this button.",
+          element: '.editor-project-edit-sidebar-save',
+          highlightClass: 'dark'
+        }
+      ]
     }
   };
 });
