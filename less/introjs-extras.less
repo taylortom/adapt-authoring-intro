@@ -1,12 +1,22 @@
 .introjs-tooltip {
-  padding: 20px;
-  p {
-    margin: 20px 0;
+  padding: 0;
+  overflow: hidden;
+  background: rgba(255,255,255,0.95);
+
+  .introjs-tooltiptext {
+    padding: 20px;
+    p {
+      margin-top: 15px;
+    }
+    .tip {
+      font-style: italic;
+    }
   }
-  .introjs-progress {
-    height: 5px;
-    .introjs-progressbar {
-      background-color: @primary-color;
+  .introjs-bullets {
+    margin-top: -12px;
+    margin-bottom: 15px;
+    ul {
+      margin: auto 0;
     }
   }
   a.introjs-button {
@@ -15,12 +25,17 @@
     background: @secondary-color;
     font-size: 12px;
     padding: 7px 10px;
-    margin-right: 7px;
-
-    &:focus {
-      .introjs-button-reset;
-      background: @primary-color;
+    margin: 0;
+    
+    &.introjs-prevbutton {
+      float: left;
     }
+    &.introjs-skipbutton,
+    &.introjs-nextbutton {
+      background: @primary-color;
+      float: right;
+    }
+    &:focus,
     &:hover {
       .introjs-button-reset;
     }
@@ -29,7 +44,6 @@
   &.frontpage {
     width: 600px;
     max-width: 600px;
-    padding: 25px;
     font-size: 15px;
     .title {
       text-align: center;
@@ -37,11 +51,22 @@
     }
   }
 }
+.introjs-overlay {
+  &.frontpage {
+    opacity: 0.7 !important;
+  }
+}
+
 .introjs-helperLayer {
+  border: 2px solid #67de96;
+
   &.dark {
     background: none;
-    border-color: white;
+    border: 1px solid white;
   }
+}
+.introjs-arrow {
+  display: none !important;
 }
 /* reusable styles */
 .introjs-button-reset {
@@ -50,4 +75,13 @@
   font-family: inherit;
   font-weight: inherit;
   border: inherit;
+  border-radius: 0;
+}
+.logo {
+  background: url(/css/assets/adapt-learning-logo-outline.png);
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin: 0 auto;
 }
