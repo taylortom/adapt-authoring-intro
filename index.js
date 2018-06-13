@@ -2,8 +2,11 @@
 define(function(require) {
   var _ = require('underscore');
   var Origin = require('core/origin');
-  var IntroJS = require('./intro.min.js');
+  var IntroJS = require('./intro.min');
+  var data = require('./stepsConfig');
+
   var viewedTuts = [];
+  var defaultOverlayClass;
 
   Origin.on('location:change', function(location) {
     location = processLocation(location);
@@ -36,84 +39,63 @@ define(function(require) {
       steps: data.steps,
       overlayOpacity: 0,
       showStepNumbers: false,
-      showBullets: false,
-      showProgress: true,
-      hidePrev: true,
-      hideNext: true,
-      prevLabel: 'Back',
-      nextLabel: 'Next',
-      doneLabel: 'Next page'
+      scrollToElement: false,
+      prevLabel: '← Back',
+      startLabel: 'Let\'s go →',
+      nextLabel: 'Next →',
+      doneLabel: '✓ Done'
     })
-    intro.onskip($.noop).onexit($.noop).oncomplete(function() {
-      viewedTuts.push(location);
-      if(data.oncomplete) data.oncomplete();
-    });
+    // add some event callbacks
+    intro
+      .onafterchange(onIntroAfterChange)
+      .onskip(onIntroSkip)
+      .oncomplete(onIntroComplete);
+    // kick it all off
     intro.start();
   }
 
-  var data = {
-    'dashboard': {
-      steps: [
-        {
-          intro: "<h1 class='title'>Welcome to Adapt!</h1><p>Adapt is a free and easy to use e-learning authoring tool that creates fully responsive, multi-device, HTML5 e-learning content using the award-winning Adapt framework.</p><p>Sit back and relax while we give you a whistle-stop tour of the most useful features of the application.</p><p>You can use the buttons below to navigate through the steps (alternatively you can also use the arrow keys). You can leave the tour at any time by pressing Esc.</p><p>Please keep your arms and legs inside the ride at all times.</p>",
-          tooltipClass: 'frontpage',
-        },
-        {
-          intro: "This is the dashboard. Here you'll find the list of Adapt courses that you've already created.",
-          element: '#app'
-        },
-        {
-          intro: "You can customise how the list is displayed using these controls.",
-          element: '.options-inner',
-          position: 'left'
-        },
-        {
-          intro: "These buttons change the list style.",
-          element: '.options-group-layout'
-        },
-        {
-          intro: "These buttons adjust how the list is sorted.",
-          element: '.options-group-sort'
-        },
-        {
-          intro: "You can filter the list using tags.",
-          element: '.projects-sidebar-add-tag',
-          highlightClass: 'dark'
-        },
-        {
-          intro: "Or search for a specific course by name.",
-          element: '.projects-sidebar-filter-search-input',
-          highlightClass: 'dark'
-        },
-        {
-          intro: "By default, you'll only be shown courses you've created, but you can view courses shared by other users by clicking here.",
-          element: '.projects-sidebar-shared-courses-inner',
-          highlightClass: 'dark'
-        },
-        {
-          intro: "Let's get started by adding a new course.",
-          element: '.projects-sidebar-add-course',
-          highlightClass: 'dark'
-        }
-      ]
-    },
-    'project:new': {
-      steps: [
-        {
-          intro: "When creating a new course, you're taken to this page, where you can enter some details about your course.",
-          tooltipClass: 'frontpage'
-        },
-        {
-          intro: "You can enable/disable groups of settings using these switch controls.",
-          element: '.sidebar-fieldset-filter-general',
-          highlightClass: 'dark'
-        },
-        {
-          intro: "When you're ready, you can save the new course using this button.",
-          element: '.editor-project-edit-sidebar-save',
-          highlightClass: 'dark'
-        }
-      ]
+  function updateOverlayClass() {
+    if(this._currentStep === 0) { // store or reset the default className
+      defaultOverlayClass = $('.introjs-overlay')[0].className;
+    } else {
+      $('.introjs-overlay')[0].className = defaultOverlayClass;
     }
-  };
+    var stepConfig = this._options.steps[this._currentStep];
+    if(stepConfig.tooltipClass) {
+      $('.introjs-overlay').addClass(stepConfig.tooltipClass);
+    }
+  }
+  function updateButtonLabels() {
+    var $skipBtn = $('.introjs-skipbutton');
+    var $prevBtn = $('.introjs-prevbutton');
+    var $nextBtn = $('.introjs-nextbutton');
+    var startLabel = this._options.startLabel;
+    var prevLabel = this._options.prevLabel;
+    var nextLabel = this._options.nextLabel;
+    var isFirstStep = this._currentStep === 0;
+    var isLastStep = this._currentStep === this._options.steps.length-1;
+    // set skip button visibility
+    (isLastStep) ? $skipBtn.show() : $skipBtn.hide();
+    // set prev button visibility
+    (isFirstStep) ? $prevBtn.hide() : $prevBtn.show();
+    // set next button text/visibility
+    if(isLastStep) $nextBtn.hide();
+    else $nextBtn.text(isFirstStep ? startLabel : nextLabel);
+  }
+
+  /**
+  * Event handlers
+  */
+
+  function onIntroAfterChange(el) {
+    updateOverlayClass.call(this);
+    updateButtonLabels.call(this);
+  }
+
+  function onIntroSkip() {}
+
+  function onIntroComplete() {
+    viewedTuts.push(location);
+    if(data.oncomplete) data.oncomplete();
+  }
 });
